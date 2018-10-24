@@ -7,6 +7,34 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <local:CheckersUserControl />
+        <local:CheckersUserControl x:Name="CheckersUserControl" Visibility="Hidden"/>
+        <Grid Name="MenuGrid" Visibility="Visible">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Button Content="Play" Grid.Row="0" Click="PlayButton_Click"/>
+            <Grid Grid.Row="1" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <RadioButton Name="RedPlayer" GroupName="m_Player" Content="Red" Grid.Column="0"/>
+                <RadioButton Name="RedBlue" GroupName="m_Player" Content="Blue" Grid.Column="1" IsChecked="True"/>
+            </Grid>
+            <Grid Grid.Row="2" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <RadioButton Name="Easy" GroupName="m_Level" Content="Easy" Grid.Column="0"/>
+                <RadioButton Name="Medium" GroupName="m_Level" Content="Medium" Grid.Column="1" IsChecked="True"/>
+                <RadioButton Name="Hard" GroupName="m_Level" Content="Hard" Grid.Column="2"/>
+            </Grid>
+            <Button Content="Rules" Grid.Row="3" Click="RulesButton_Click"/>
+        </Grid>
     </Grid>
 </Window>

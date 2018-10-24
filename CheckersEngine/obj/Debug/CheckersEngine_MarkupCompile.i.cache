@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\MyProjects\GamesEngine\CheckersEngine\obj\Debug\
+C:\MyProjects\Checkers\CheckersEngine\obj\Debug\
 CheckersEngine
 none
 false
 DEBUG;TRACE
-C:\MyProjects\GamesEngine\CheckersEngine\App.xaml
-353462834
+C:\MyProjects\Checkers\CheckersEngine\App.xaml
+21750588072
 
-152026340655
-15-646042187
-CheckersUserControl.xaml;MainWindow.xaml;MenuUserControl.xaml;
+22-464571234
+141320664073
+CheckersUserControl.xaml;MainWindow.xaml;
 
-True
+False
 
