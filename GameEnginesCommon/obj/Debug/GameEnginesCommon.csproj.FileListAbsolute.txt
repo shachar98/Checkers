@@ -1,0 +1,5 @@
+C:\MyProjects\GamesEngine\GameEnginesCommon\obj\Debug\GameEnginesCommon.csprojResolveAssemblyReference.cache
+C:\MyProjects\GamesEngine\GameEnginesCommon\bin\Debug\GameEnginesCommon.dll
+C:\MyProjects\GamesEngine\GameEnginesCommon\bin\Debug\GameEnginesCommon.pdb
+C:\MyProjects\GamesEngine\GameEnginesCommon\obj\Debug\GameEnginesCommon.dll
+C:\MyProjects\GamesEngine\GameEnginesCommon\obj\Debug\GameEnginesCommon.pdb
