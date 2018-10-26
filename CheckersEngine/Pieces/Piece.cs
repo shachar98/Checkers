@@ -50,8 +50,8 @@ namespace CheckersEngine
 
     public enum Player
     {
-        Black,
-        White
+        Red,
+        Blue
     }
 
     public enum Level
@@ -65,7 +65,7 @@ namespace CheckersEngine
     {
         public static Player GetOtherPlayer(this Player player)
         {
-            return player == Player.Black ? Player.White : Player.Black;
+            return player == Player.Red ? Player.Blue : Player.Red;
         }
     }
 }

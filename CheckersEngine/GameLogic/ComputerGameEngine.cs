@@ -47,14 +47,14 @@ namespace CheckersEngine
         {
             return new Piece[,]
             {
-                {new RegularPiece(Player.Black), null, new RegularPiece(Player.Black), null, new RegularPiece(Player.Black), null, new RegularPiece(Player.Black), null },
-                {null, new RegularPiece(Player.Black), null, new RegularPiece(Player.Black), null, new RegularPiece(Player.Black), null, new RegularPiece(Player.Black) },
-                {new RegularPiece(Player.Black), null, new RegularPiece(Player.Black), null, new RegularPiece(Player.Black), null, new RegularPiece(Player.Black), null },
+                {new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null },
+                {null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red) },
+                {new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null },
                 {null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null},
-                {null, new RegularPiece(Player.White), null, new RegularPiece(Player.White), null, new RegularPiece(Player.White), null, new RegularPiece(Player.White) },
-                {new RegularPiece(Player.White), null, new RegularPiece(Player.White), null, new RegularPiece(Player.White), null, new RegularPiece(Player.White), null },
-                {null, new RegularPiece(Player.White), null, new RegularPiece(Player.White), null, new RegularPiece(Player.White), null, new RegularPiece(Player.White) },
+                {null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue) },
+                {new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null },
+                {null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue) },
             };
         }
     }

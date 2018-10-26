@@ -26,9 +26,8 @@ namespace CheckersEngine
     /// </summary>
     public partial class CheckersUserControl : UserControl
     {
-        private const int CELL_SIZE = 20;
+        private const int CELL_SIZE = 30;
         private GameEngine m_GameEngine;
-        private bool m_IsPlaying = false;
         private bool m_FinishRender = false;
         private Player m_HumanPlayer;
         private Button m_SelectedButton;
@@ -44,19 +43,20 @@ namespace CheckersEngine
             m_MovesHandler = new MovesHandler();
             m_WinningChecker = new WinningChecker(m_MovesHandler);
             m_UserGameEngine = new UserGameEngine(m_MovesHandler);
+
+            this.PreviewMouseDown += CheckersUserControl_MouseDown;
+            this.PreviewMouseMove += CheckersUserControl_MouseMove;
+            this.PreviewMouseUp += CheckersUserControl_MouseUp;
+
+            m_GameEngine = new GameEngine(Level.Medium);
+            m_HumanPlayer = Player.Blue;
         }
 
         public event EventHandler GameFinished;
         public void StartPlay(Player player, Level level)
         {
-            m_IsPlaying = true;
-
             m_GameEngine = new GameEngine(level);
             m_HumanPlayer = player;
-
-            this.PreviewMouseDown += CheckersUserControl_MouseDown;
-            this.PreviewMouseMove += CheckersUserControl_MouseMove;
-            this.PreviewMouseUp += CheckersUserControl_MouseUp;
 
             InvalidateVisual();
         }
@@ -71,7 +71,6 @@ namespace CheckersEngine
             this.PreviewMouseDown -= CheckersUserControl_MouseDown;
             this.PreviewMouseMove -= CheckersUserControl_MouseMove;
             this.PreviewMouseUp -= CheckersUserControl_MouseUp;
-            m_IsPlaying = false;
 
             GameFinished?.Invoke(this, EventArgs.Empty);
         }
@@ -80,8 +79,8 @@ namespace CheckersEngine
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (!m_IsPlaying)
-                return;
+            //if (!m_IsPlaying)
+            //    return;
 
             Piece[,] currBoard = m_GameEngine.MoveState.MidStates.FirstOrDefault();
             m_FinishRender = currBoard == null;
@@ -164,16 +163,16 @@ namespace CheckersEngine
 
             if (board[row, col].PieceType == PieceType.Regular)
             {
-                if (board[row, col]?.Player == Player.White)
+                if (board[row, col]?.Player == Player.Blue)
                     FillButtonWithImage(button, Properties.Resources.BluePlayer);
-                else if (board[row, col]?.Player == Player.Black)
+                else if (board[row, col]?.Player == Player.Red)
                     FillButtonWithImage(button, Properties.Resources.RedPlayer);
             }
             else 
             {
-                if (board[row, col]?.Player == Player.White)
+                if (board[row, col]?.Player == Player.Blue)
                     FillButtonWithImage(button, Properties.Resources.BluePlayerQueen);
-                else if (board[row, col]?.Player == Player.Black)
+                else if (board[row, col]?.Player == Player.Red)
                     FillButtonWithImage(button, Properties.Resources.RedPlayerQueen);
             }
         }
@@ -252,7 +251,8 @@ namespace CheckersEngine
             var position = e.GetPosition(this);
             int row = (int)(position.Y / CELL_SIZE);
             int col = (int)(position.X / CELL_SIZE);
-            if (m_GameEngine.MoveState.CurrState[row, col] == null)
+            Piece piece = m_GameEngine.MoveState.CurrState[row, col];
+            if (piece == null || piece.Player != m_HumanPlayer)
                 return;
 
             m_SelectedButton = GetButton(position);

@@ -26,8 +26,8 @@ namespace CheckersEngine
                          new BoardCoordinate(-1, 1),
                     };
             }
-            // Black goes to max row, white goes to min row
-            else if (piece.Player == Player.Black)
+            // Red goes to max row, blue goes to min row
+            else if (piece.Player == Player.Red)
             {
                 return new List<BoardCoordinate>()
                     {
@@ -48,11 +48,11 @@ namespace CheckersEngine
         public void ChangeToQueenIfNeeded(Piece[,] clonedBoard, BoardCoordinate newPosition)
         {
             Piece piece = clonedBoard[newPosition.Row, newPosition.Col];
-            if (newPosition.Row == 7 && piece.Player == Player.Black)
+            if (newPosition.Row == 7 && piece.Player == Player.Red)
             {
                 clonedBoard[newPosition.Row, newPosition.Col] = piece.TurnToQueen();
             }
-            else if (newPosition.Row == 0 && piece.Player == Player.White)
+            else if (newPosition.Row == 0 && piece.Player == Player.Blue)
             {
                 clonedBoard[newPosition.Row, newPosition.Col] = piece.TurnToQueen();
             }

@@ -5,36 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CheckersEngine"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="308" Width="262">
     <Grid>
-        <local:CheckersUserControl x:Name="CheckersUserControl" Visibility="Hidden"/>
-        <Grid Name="MenuGrid" Visibility="Visible">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Button Content="Play" Grid.Row="0" Click="PlayButton_Click"/>
-            <Grid Grid.Row="1" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <RadioButton Name="RedPlayer" GroupName="m_Player" Content="Red" Grid.Column="0"/>
-                <RadioButton Name="RedBlue" GroupName="m_Player" Content="Blue" Grid.Column="1" IsChecked="True"/>
-            </Grid>
-            <Grid Grid.Row="2" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <RadioButton Name="Easy" GroupName="m_Level" Content="Easy" Grid.Column="0"/>
-                <RadioButton Name="Medium" GroupName="m_Level" Content="Medium" Grid.Column="1" IsChecked="True"/>
-                <RadioButton Name="Hard" GroupName="m_Level" Content="Hard" Grid.Column="2"/>
-            </Grid>
-            <Button Content="Rules" Grid.Row="3" Click="RulesButton_Click"/>
-        </Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ToolBarTray Grid.Row="0">
+            <ToolBar>
+                <Button Content="StartGame" Click="PlayButton_Click"/>
+                <Button Content="Game Options" Click="GameOptinsClick" />
+                <Button Content="Rules" Grid.Row="3" Click="RulesButton_Click"/>
+            </ToolBar>
+        </ToolBarTray>
+        <local:CheckersUserControl x:Name="CheckersUserControl" Grid.Row="1" GameFinished="CheckersUserControl_GameFinished"/>
     </Grid>
 </Window>
