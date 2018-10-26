@@ -17,18 +17,17 @@ namespace CheckersEngine
 
     public class CheckersGameState : IGameState<CheckesMoveState>
     {
-        private static Dictionary<string, double> s_ScoresDictionary = new Dictionary<string, double>();
         private Player m_currPlayer;
-        public MovesHandler m_MovesHandler { get; set; }
+        public MovesHandler MovesHandler { get; set; }
         public CheckesMoveState MoveState { get; set; }
-        private WinningChecker m_WinningChecker { get; set; }
+        private WinningChecker m_WinningChecker;
 
         public CheckersGameState(Piece[,] board, Player currPlayer)
         {
             this.Board = board;
             m_currPlayer = currPlayer;
-            m_MovesHandler = new MovesHandler();
-            m_WinningChecker = new WinningChecker(m_MovesHandler);
+            MovesHandler = new MovesHandler();
+            m_WinningChecker = new WinningChecker(MovesHandler);
         }
 
         public CheckersGameState(CheckesMoveState moveState, Player currPlayer)
@@ -93,8 +92,8 @@ namespace CheckersEngine
             List<CheckesMoveState> newBoards = new List<CheckesMoveState>();
 
             Piece currPiece = originalBoard[currPosition.Row, currPosition.Col];
-            List<BoardCoordinate> possibleMoves = m_MovesHandler.GetSuspectMovesDirections(currPiece, isMultipleEating);
-            int squareMoveCount = m_MovesHandler.GetSquaresMoveCount(currPiece, Board);
+            List<BoardCoordinate> possibleMoves = MovesHandler.GetSuspectMovesDirections(currPiece, isMultipleEating);
+            int squareMoveCount = MovesHandler.GetSquaresMoveCount(currPiece, Board);
 
             foreach (var direction in possibleMoves)
             {
@@ -117,7 +116,7 @@ namespace CheckersEngine
                         Piece[,] clonedBoard = CloneBoard(originalBoard);
                         clonedBoard[newPosition.Row, newPosition.Col] = currPiece;
                         clonedBoard[currPosition.Row, currPosition.Col] = null;
-                        m_MovesHandler.ChangeToQueenIfNeeded(clonedBoard, newPosition);
+                        MovesHandler.ChangeToQueenIfNeeded(clonedBoard, newPosition);
                         var newMoveState = currMoveState.CloneWithNewState(clonedBoard);
                         newBoards.Add(newMoveState);
                         continue;
@@ -132,7 +131,7 @@ namespace CheckersEngine
                     {
                         Piece[,] clonedBoard = CloneBoard(originalBoard);
                         clonedBoard[newPosition.Row, newPosition.Col] = clonedBoard[currPosition.Row, currPosition.Col];
-                        m_MovesHandler.ChangeToQueenIfNeeded(clonedBoard, newPosition);
+                        MovesHandler.ChangeToQueenIfNeeded(clonedBoard, newPosition);
                         clonedBoard[currPosition.Row, currPosition.Col] = null;
                         clonedBoard[oponentPosition.Row, oponentPosition.Col] = null;
                         var newMoveState = currMoveState.CloneWithNewState(clonedBoard);

@@ -18,8 +18,10 @@ namespace CheckersEngine
         {
             m_AlpahBetaAlgorithem = InitAlphaBeta(level);
 
-            MoveState = new CheckesMoveState();
-            MoveState.CurrState = InitBoard();
+            MoveState = new CheckesMoveState()
+            {
+                CurrState = InitBoard()
+            };
         }
 
         private AlphaBetaAlgorithem InitAlphaBeta(Level level)

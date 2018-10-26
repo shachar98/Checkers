@@ -39,7 +39,6 @@ namespace CheckersEngine
             Level level = Easy.IsChecked.Value ? Level.Easy :
                           Medium.IsChecked.Value ? Level.Medium : Level.High;
 
-
             CheckersUserControl.StartPlay(player, level);
             CheckersUserControl.GameFinished += CheckersUserControl_GameFinished;
         }
