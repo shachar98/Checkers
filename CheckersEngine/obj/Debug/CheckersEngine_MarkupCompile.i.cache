@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\MyProjects\Checkers\CheckersEngine\App.xaml
-21750588072
+4664473890
 
-22-464571234
+24-974518206
 141320664073
-CheckersUserControl.xaml;MainWindow.xaml;
+UI\RulesUserControl.xaml;UI\OptionsUserControl.xaml;UI\CheckersUserControl.xaml;MainWindow.xaml;
 
-False
+True
 

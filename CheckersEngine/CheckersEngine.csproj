@@ -60,10 +60,24 @@
     <Compile Include="CommonClasses\IGameState.cs" />
     <Compile Include="GameLogic\MovesHandler.cs" />
     <Compile Include="GameLogic\WinningChecker.cs" />
+    <Compile Include="UI\RulesUserControl.xaml.cs">
+      <DependentUpon>RulesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\OptionsUserControl.xaml.cs">
+      <DependentUpon>OptionsUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pieces\QueenPiece.cs" />
     <Compile Include="Pieces\RegularPiece.cs" />
     <Compile Include="GameLogic\UserGameEngine.cs" />
-    <Page Include="CheckersUserControl.xaml">
+    <Page Include="UI\RulesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\OptionsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\CheckersUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -76,7 +90,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameLogic\CheckersGameState.cs" />
-    <Compile Include="CheckersUserControl.xaml.cs">
+    <Compile Include="UI\CheckersUserControl.xaml.cs">
       <DependentUpon>CheckersUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="GameLogic\CheckesMoveState.cs" />
