@@ -25,12 +25,7 @@ namespace CheckersEngine
         /// <param name="end">The finish moving position</param>
         /// <param name="board">The current Board</param>
         /// <returns>True if the move is valid. Otherwise false</returns>
-        public bool IsValidMove(BoardCoordinate start, BoardCoordinate end, Piece[,] board)
-        {
-            return IsValidMove(start, end, board, false);
-        }
-
-        private bool IsValidMove(BoardCoordinate start, BoardCoordinate end, Piece[,] board, bool isContinuesEating)
+        public bool IsValidMove(BoardCoordinate start, BoardCoordinate end, Piece[,] board, bool isContinuesEating)
         {
             var movingPiece = board[start.Row, start.Col];
             if (!end.IsInBoard(board))

@@ -28,13 +28,14 @@ namespace CheckersEngine
         #region Members
 
         private const int CELL_SIZE = 30;
-        private IComputerGameEngine m_ComputerGameEngine;
         private bool m_FinishRender = false;
         private bool m_GameFinished = false;
+        private bool m_ContinuesEating = false;
         private Player m_HumanPlayer;
         private Button m_SelectedButton;
         private BoardCoordinate m_SelectedButtonPosition;
         private MovesHandler m_MovesHandler;
+        private IComputerGameEngine m_ComputerGameEngine;
         private IUserGameEngine m_UserGameEngine;
 
         #endregion
@@ -225,7 +226,7 @@ namespace CheckersEngine
             var newPosition = new BoardCoordinate(row, col);
 
             var board = m_ComputerGameEngine.GameState.Board;
-            if (m_UserGameEngine.IsValidMove(m_SelectedButtonPosition, newPosition, board))
+            if (m_UserGameEngine.IsValidMove(m_SelectedButtonPosition, newPosition, board, m_ContinuesEating))
             {
                 board[newPosition.Row, newPosition.Col] = board[m_SelectedButtonPosition.Row, m_SelectedButtonPosition.Col];
                 board[m_SelectedButtonPosition.Row, m_SelectedButtonPosition.Col] = null;
@@ -244,9 +245,13 @@ namespace CheckersEngine
                     turnFinish = !m_UserGameEngine.CanContinueEat(board, newPosition);
                 }
 
+                m_ContinuesEating = !turnFinish;
                 if (turnFinish)
+                {
                     if (!CheckWinning(m_HumanPlayer))
                         Task.Factory.StartNew(MakeComputerTurn);
+                }
+
             }
 
             m_SelectedButton = null;
