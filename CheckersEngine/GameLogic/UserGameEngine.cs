@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CheckersEngine
 {
-    public class UserGameEngine
+    public class UserGameEngine : IUserGameEngine
     {
         MovesHandler m_MovesHandler;
         public UserGameEngine(MovesHandler movesHandler)
@@ -15,10 +15,14 @@ namespace CheckersEngine
             m_MovesHandler = movesHandler;
         }
 
-        public bool IsValidMove(BoardCoordinate start, BoardCoordinate end, Piece[,] board, bool isContinuesEating)
+        public bool IsValidMove(BoardCoordinate start, BoardCoordinate end, Piece[,] board)
+        {
+            return IsValidMove(start, end, board, false);
+        }
+
+        private bool IsValidMove(BoardCoordinate start, BoardCoordinate end, Piece[,] board, bool isContinuesEating)
         {
             var movingPiece = board[start.Row, start.Col];
-            bool mustEat = m_MovesHandler.GetNextActions(movingPiece.Player, board, movingPiece.Player).First().Board.PiecesCount() != board.PiecesCount();
             if (!end.IsInBoard(board))
                 return false;
 
@@ -32,13 +36,14 @@ namespace CheckersEngine
                 return false;
 
             var direction = distance.Divide(rowDistance);
-            var movesDirections = m_MovesHandler.GetSuspectMovesDirections(movingPiece, isContinuesEating);
+            var movesDirections = m_MovesHandler.GetMovesDirections(movingPiece, isContinuesEating);
             if (!movesDirections.Contains(direction))
                 return false;
 
             if (board[end.Row, end.Col] != null)
                 return false;
 
+            bool mustEat = m_MovesHandler.GetNextActions(movingPiece.Player, new CheckersGameState(board, movingPiece.Player)).First().Board.PiecesCount() != board.PiecesCount();
             if (rowDistance == 1 && !isContinuesEating && !mustEat)
                 return true;
 
@@ -60,11 +65,11 @@ namespace CheckersEngine
             return false;
         }
 
-        public bool HaveMoreMoves(Piece[,] board, BoardCoordinate position)
+        public bool CanContinueEat(Piece[,] board, BoardCoordinate position)
         {
             Piece piece = board[position.Row, position.Col];
             int movesCount = m_MovesHandler.GetSquaresMoveCount(piece, board);
-            var movesDirections = m_MovesHandler.GetSuspectMovesDirections(piece, true);
+            var movesDirections = m_MovesHandler.GetMovesDirections(piece, true);
             foreach (var item in movesDirections)
             {
                 for (int i = 0; i <= movesCount + 1; i++)

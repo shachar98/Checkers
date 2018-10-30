@@ -16,12 +16,4 @@ namespace GameEnginesCommon
 
         double CalcScore();
     }
-
-    public interface IAction
-    { }
-
-    public interface IBoardGameState<Tcelss, Taction> : IGameState<Taction>
-    {
-        Tcelss[,] Board { get; }
-    }
 }

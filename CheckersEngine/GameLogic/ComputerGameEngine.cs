@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 namespace CheckersEngine
 {
 
-    public class GameEngine
+    public class ComputerGameEngine : IComputerGameEngine
     {
         public CheckersGameState GameState { get; private set; }
-        private AlphaBetaAlgorithem m_AlpahBetaAlgorithem;
-        public GameEngine(Level level, Player player)
+        private IMoveChooser m_AlpahBetaAlgorithem;
+        public ComputerGameEngine(Level level, Player player)
         {
             m_AlpahBetaAlgorithem = InitAlphaBeta(level);
 

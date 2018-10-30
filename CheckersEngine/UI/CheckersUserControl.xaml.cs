@@ -1,5 +1,4 @@
-﻿using CheckersEngine.GameLogic;
-using GameEnginesCommon;
+﻿using GameEnginesCommon;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -27,35 +26,33 @@ namespace CheckersEngine
     public partial class CheckersUserControl : UserControl
     {
         private const int CELL_SIZE = 30;
-        private GameEngine m_GameEngine;
+        private IComputerGameEngine m_ComputerGameEngine;
         private bool m_FinishRender = false;
         private Player m_HumanPlayer;
         private Button m_SelectedButton;
         private BoardCoordinate m_SelectedButtonPosition;
         private MovesHandler m_MovesHandler;
-        private WinningChecker m_WinningChecker;
-        private UserGameEngine m_UserGameEngine;
+        private IUserGameEngine m_UserGameEngine;
 
         public CheckersUserControl()
         {
             InitializeComponent();
 
-            m_MovesHandler = new MovesHandler();
-            m_WinningChecker = new WinningChecker(m_MovesHandler);
+            m_MovesHandler = MovesHandler.Instance;
             m_UserGameEngine = new UserGameEngine(m_MovesHandler);
 
             this.PreviewMouseDown += CheckersUserControl_MouseDown;
             this.PreviewMouseMove += CheckersUserControl_MouseMove;
             this.PreviewMouseUp += CheckersUserControl_MouseUp;
 
-            m_GameEngine = new GameEngine(Level.Medium, Player.Blue);
+            m_ComputerGameEngine = new ComputerGameEngine(Level.Medium, Player.Blue);
             m_HumanPlayer = Player.Blue;
         }
 
         public event EventHandler GameFinished;
         public void StartPlay(Player player, Level level)
         {
-            m_GameEngine = new GameEngine(level, player);
+            m_ComputerGameEngine = new ComputerGameEngine(level, player);
             m_HumanPlayer = player;
 
             InvalidateVisual();
@@ -63,7 +60,7 @@ namespace CheckersEngine
 
         private void CheckWinning(Player player)
         {
-            if (!m_WinningChecker.IsLost(player.GetOtherPlayer(), m_GameEngine.GameState.Board))
+            if (m_MovesHandler.HaveActions(player.GetOtherPlayer(), new CheckersGameState(m_ComputerGameEngine.GameState.Board, player.GetOtherPlayer())))
                 return;
 
             Dispatcher.BeginInvoke(new Action(() => MessageBox.Show($"Player {player} wins!!")));
@@ -82,13 +79,13 @@ namespace CheckersEngine
             //if (!m_IsPlaying)
             //    return;
 
-            Piece[,] currBoard = m_GameEngine.GameState.MidStates.FirstOrDefault();
+            Piece[,] currBoard = m_ComputerGameEngine.GameState.MidStates.FirstOrDefault();
             m_FinishRender = currBoard == null;
 
             if (currBoard == null)
-                currBoard = m_GameEngine.GameState.Board;
+                currBoard = m_ComputerGameEngine.GameState.Board;
             else
-                m_GameEngine.GameState.MidStates?.RemoveAt(0);
+                m_ComputerGameEngine.GameState.MidStates?.RemoveAt(0);
 
             RemoveOldButtons();
 
@@ -112,7 +109,7 @@ namespace CheckersEngine
 
         private async Task ContinueRender()
         {
-            await Task.Delay(1000);
+            await Task.Delay(700);
             await Dispatcher.BeginInvoke(new Action(() => this.InvalidateVisual()));
         }
 
@@ -121,7 +118,7 @@ namespace CheckersEngine
             await Task.Delay(500);
             await Dispatcher.BeginInvoke(new Action(() =>
             {
-                m_GameEngine.Play(m_HumanPlayer.GetOtherPlayer());
+                m_ComputerGameEngine.Play(m_HumanPlayer.GetOtherPlayer());
                 this.InvalidateVisual();
             }));
         }
@@ -203,8 +200,8 @@ namespace CheckersEngine
             int row = (int)(position.Y / CELL_SIZE);
             var newPosition = new BoardCoordinate(row, col);
 
-            var board = m_GameEngine.GameState.Board;
-            if (m_UserGameEngine.IsValidMove(m_SelectedButtonPosition, newPosition, board, false))
+            var board = m_ComputerGameEngine.GameState.Board;
+            if (m_UserGameEngine.IsValidMove(m_SelectedButtonPosition, newPosition, board))
             {
                 board[newPosition.Row, newPosition.Col] = board[m_SelectedButtonPosition.Row, m_SelectedButtonPosition.Col];
                 board[m_SelectedButtonPosition.Row, m_SelectedButtonPosition.Col] = null;
@@ -219,7 +216,7 @@ namespace CheckersEngine
                 if (board[betweenCoor.Row, betweenCoor.Col] != null)
                 {
                     board[betweenCoor.Row, betweenCoor.Col] = null;
-                    turnFinish = !m_UserGameEngine.HaveMoreMoves(board, newPosition);
+                    turnFinish = !m_UserGameEngine.CanContinueEat(board, newPosition);
                 }
 
                 if (turnFinish)
@@ -251,7 +248,7 @@ namespace CheckersEngine
             var position = e.GetPosition(this);
             int row = (int)(position.Y / CELL_SIZE);
             int col = (int)(position.X / CELL_SIZE);
-            Piece piece = m_GameEngine.GameState.Board[row, col];
+            Piece piece = m_ComputerGameEngine.GameState.Board[row, col];
             if (piece == null || piece.Player != m_HumanPlayer)
                 return;
 

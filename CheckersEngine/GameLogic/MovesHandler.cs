@@ -7,14 +7,20 @@ using System.Threading.Tasks;
 
 namespace CheckersEngine
 {
-    public class MovesHandler
+    public class MovesHandler : IMovesHandler
     {
+        private MovesHandler()
+        {
+        }
+
+        public static MovesHandler Instance { get; } = new MovesHandler();
+
         public int GetSquaresMoveCount(Piece piece, Piece[,] board)
         {
             return piece.PieceType == PieceType.Regular ? 1 : board.GetLength(0);
         }
 
-        public List<BoardCoordinate> GetSuspectMovesDirections(Piece piece, bool isMultipleEating)
+        public List<BoardCoordinate> GetMovesDirections(Piece piece, bool isMultipleEating)
         {
             if (isMultipleEating || piece.PieceType == PieceType.Queen)
             {
@@ -58,24 +64,44 @@ namespace CheckersEngine
             }
         }
 
-        public IEnumerable<CheckersGameState> GetNextActions(Player player, Piece[,] board, Player originalStatePlayer)
+        public bool HaveActions(Player player, CheckersGameState gameState)
         {
             List<CheckersGameState> newStates = new List<CheckersGameState>();
-            for (int row = 0; row < board.GetLength(0); row++)
+            for (int row = 0; row < gameState.Board.GetLength(0); row++)
             {
-                for (int col = 0; col < board.GetLength(1); col++)
+                for (int col = 0; col < gameState.Board.GetLength(1); col++)
                 {
-                    var currPiece = board[row, col];
+                    var currPiece = gameState.Board[row, col];
                     if (currPiece == null || currPiece.Player != player)
                         continue;
 
                     BoardCoordinate currCoordinate = new BoardCoordinate(row, col);
-                    List<CheckersGameState> newBoards = GetMovesOptions(currCoordinate, player, false, new CheckersGameState(board, originalStatePlayer));
+                    if (GetMovesOptions(currCoordinate, player, false, gameState).Any())
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        public IEnumerable<CheckersGameState> GetNextActions(Player player, CheckersGameState gameState)
+        {
+            List<CheckersGameState> newStates = new List<CheckersGameState>();
+            for (int row = 0; row < gameState.Board.GetLength(0); row++)
+            {
+                for (int col = 0; col < gameState.Board.GetLength(1); col++)
+                {
+                    var currPiece = gameState.Board[row, col];
+                    if (currPiece == null || currPiece.Player != player)
+                        continue;
+
+                    BoardCoordinate currCoordinate = new BoardCoordinate(row, col);
+                    List<CheckersGameState> newBoards = GetMovesOptions(currCoordinate, player, false, gameState);
                     newStates.AddRange(newBoards);
                 }
             }
 
-            var piecesCount = board.PiecesCount();
+            var piecesCount = gameState.Board.PiecesCount();
             var eatingStates = newStates.Where(_ => _.Board.PiecesCount() != piecesCount).ToList();
             if (eatingStates.Count != 0)
                 return eatingStates;
@@ -88,7 +114,7 @@ namespace CheckersEngine
             List<CheckersGameState> newBoards = new List<CheckersGameState>();
 
             Piece currPiece = currGameState.Board[currPosition.Row, currPosition.Col];
-            List<BoardCoordinate> possibleMoves = GetSuspectMovesDirections(currPiece, isMultipleEating);
+            List<BoardCoordinate> possibleMoves = GetMovesDirections(currPiece, isMultipleEating);
             int squareMoveCount = GetSquaresMoveCount(currPiece, currGameState.Board);
 
             foreach (var direction in possibleMoves)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameEnginesCommon
 {
-    public class AlphaBetaAlgorithem
+    public class AlphaBetaAlgorithem : IMoveChooser
     {
         private int m_Depth;
         public AlphaBetaAlgorithem(int depth)
@@ -32,7 +32,7 @@ namespace GameEnginesCommon
             return bestMove;
         }
 
-        public double Min<T>(int depth, int agentIndex, IGameState<T> state, double alpha, double betta)
+        private double Min<T>(int depth, int agentIndex, IGameState<T> state, double alpha, double betta)
         {
             if (state.IsWin() || state.IsLost() || m_Depth == depth)
                 return state.CalcScore();
@@ -51,7 +51,7 @@ namespace GameEnginesCommon
             return lowestScore;
         }
 
-        public double Max<T>(int depth, int agentIndex, IGameState<T> state, double alpha, double betta)
+        private double Max<T>(int depth, int agentIndex, IGameState<T> state, double alpha, double betta)
         {
             if (state.IsWin() || state.IsLost() || m_Depth == depth)
                 return state.CalcScore();

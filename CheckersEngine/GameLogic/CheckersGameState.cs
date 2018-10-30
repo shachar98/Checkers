@@ -1,5 +1,4 @@
-﻿using CheckersEngine.GameLogic;
-using GameEnginesCommon;
+﻿using GameEnginesCommon;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +17,8 @@ namespace CheckersEngine
     public class CheckersGameState : IGameState<CheckersGameState>
     {
         public Player Player { get; }
-        public MovesHandler MovesHandler { get; set; }
         public List<Piece[,]> MidStates { get; set; } = new List<Piece[,]>();
-        private WinningChecker m_WinningChecker;
+        private IMovesHandler m_MovesHandler;
         public int NumOfAgents => 2;
         public Piece[,] Board { get; }
 
@@ -28,8 +26,7 @@ namespace CheckersEngine
         {
             this.Board = board;
             Player = currPlayer;
-            MovesHandler = new MovesHandler();
-            m_WinningChecker = new WinningChecker(MovesHandler);
+            m_MovesHandler = MovesHandler.Instance;
         }
 
         public double CalcScore()
@@ -62,23 +59,23 @@ namespace CheckersEngine
         public IEnumerable<CheckersGameState> GetNextActions(int agentIndex)
         {
             Player player = GetPlayer(agentIndex);
-            return MovesHandler.GetNextActions(player, Board, this.Player);
+            return m_MovesHandler.GetNextActions(player, this);
         }
 
         public IGameState<CheckersGameState> GetNextState(int agentIndex, CheckersGameState action)
         {
             return action;
-            // return new CheckersGameState(action, m_currPlayer);
         }
 
         public bool IsLost()
         {
-            return m_WinningChecker.IsLost(Player, Board);
+            return !m_MovesHandler.HaveActions(Player, new CheckersGameState(Board, Player));
         }
 
         public bool IsWin()
         {
-            return m_WinningChecker.IsLost(Player.GetOtherPlayer(), Board);
+            return !m_MovesHandler.HaveActions(Player.GetOtherPlayer(), new CheckersGameState(Board, Player.GetOtherPlayer()));
+
         }
 
         private Player GetPlayer(int playerIndex)

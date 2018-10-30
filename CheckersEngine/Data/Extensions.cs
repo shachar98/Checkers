@@ -31,5 +31,19 @@ namespace CheckersEngine
 
             return newBoard;
         }
+
+        public static bool BoardsEqual(this Piece[,] originalBoard, Piece[,] otherBoard)
+        {
+            for (int row = 0; row < originalBoard.GetLength(0); row++)
+            {
+                for (int col = 0; col < originalBoard.GetLength(1); col++)
+                {
+                    if (!Equals(originalBoard[row, col], originalBoard[row, col]))
+                        return false;
+                }
+            }
+
+            return true;
+        }
     }
 }

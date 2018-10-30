@@ -57,18 +57,21 @@
     </ApplicationDefinition>
     <Compile Include="CommonClasses\AlphaBetaAlgorithem.cs" />
     <Compile Include="CommonClasses\BoardCoordinate.cs" />
+    <Compile Include="CommonClasses\IAlphaBetaAlgorithem.cs" />
     <Compile Include="CommonClasses\IGameState.cs" />
-    <Compile Include="GameLogic\Extensions.cs" />
+    <Compile Include="Data\Extensions.cs" />
+    <Compile Include="GameLogic\IComputerGameEngine.cs" />
+    <Compile Include="GameLogic\IMovesHandler.cs" />
+    <Compile Include="GameLogic\IUserGameEngine.cs" />
     <Compile Include="GameLogic\MovesHandler.cs" />
-    <Compile Include="GameLogic\WinningChecker.cs" />
     <Compile Include="UI\RulesUserControl.xaml.cs">
       <DependentUpon>RulesUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\OptionsUserControl.xaml.cs">
       <DependentUpon>OptionsUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pieces\QueenPiece.cs" />
-    <Compile Include="Pieces\RegularPiece.cs" />
+    <Compile Include="Data\QueenPiece.cs" />
+    <Compile Include="Data\RegularPiece.cs" />
     <Compile Include="GameLogic\UserGameEngine.cs" />
     <Page Include="UI\RulesUserControl.xaml">
       <SubType>Designer</SubType>
@@ -95,7 +98,7 @@
       <DependentUpon>CheckersUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="GameLogic\ComputerGameEngine.cs" />
-    <Compile Include="Pieces\Piece.cs" />
+    <Compile Include="Data\Piece.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
