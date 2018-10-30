@@ -35,8 +35,8 @@ C:\MyProjects\Checkers\CheckersEngine\obj\Debug\CheckersEngine.exe
 C:\MyProjects\Checkers\CheckersEngine\obj\Debug\CheckersEngine.pdb
 C:\MyProjects\Checkers\CheckersEngine\obj\Debug\UI\CheckersUserControl.g.cs
 C:\MyProjects\Checkers\CheckersEngine\obj\Debug\UI\CheckersUserControl.baml
-C:\MyProjects\Checkers\CheckersEngine\obj\Debug\UI\RulesUserControl.g.cs
-C:\MyProjects\Checkers\CheckersEngine\obj\Debug\UI\OptionsUserControl.g.cs
-C:\MyProjects\Checkers\CheckersEngine\obj\Debug\UI\RulesUserControl.baml
-C:\MyProjects\Checkers\CheckersEngine\obj\Debug\UI\OptionsUserControl.baml
 C:\MyProjects\Checkers\CheckersEngine\obj\Debug\CheckersEngine.csprojResolveAssemblyReference.cache
+C:\MyProjects\Checkers\CheckersEngine\obj\Debug\RulesWindow.g.cs
+C:\MyProjects\Checkers\CheckersEngine\obj\Debug\RulesWindow.baml
+C:\MyProjects\Checkers\CheckersEngine\obj\Debug\OptionsWindow.g.cs
+C:\MyProjects\Checkers\CheckersEngine\obj\Debug\OptionsWindow.baml

@@ -64,20 +64,20 @@
     <Compile Include="GameLogic\IMovesHandler.cs" />
     <Compile Include="GameLogic\IUserGameEngine.cs" />
     <Compile Include="GameLogic\MovesHandler.cs" />
-    <Compile Include="UI\RulesUserControl.xaml.cs">
-      <DependentUpon>RulesUserControl.xaml</DependentUpon>
+    <Compile Include="OptionsWindow.xaml.cs">
+      <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\OptionsUserControl.xaml.cs">
-      <DependentUpon>OptionsUserControl.xaml</DependentUpon>
+    <Compile Include="RulesWindow.xaml.cs">
+      <DependentUpon>RulesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Data\QueenPiece.cs" />
     <Compile Include="Data\RegularPiece.cs" />
     <Compile Include="GameLogic\UserGameEngine.cs" />
-    <Page Include="UI\RulesUserControl.xaml">
+    <Page Include="OptionsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\OptionsUserControl.xaml">
+    <Page Include="RulesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

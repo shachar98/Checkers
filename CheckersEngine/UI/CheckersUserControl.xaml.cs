@@ -28,6 +28,7 @@ namespace CheckersEngine
         private const int CELL_SIZE = 30;
         private IComputerGameEngine m_ComputerGameEngine;
         private bool m_FinishRender = false;
+        private bool m_GameFinished = false;
         private Player m_HumanPlayer;
         private Button m_SelectedButton;
         private BoardCoordinate m_SelectedButtonPosition;
@@ -49,13 +50,16 @@ namespace CheckersEngine
             m_HumanPlayer = Player.Blue;
         }
 
-        public event EventHandler GameFinished;
         public void StartPlay(Player player, Level level)
         {
             m_ComputerGameEngine = new ComputerGameEngine(level, player);
             m_HumanPlayer = player;
+            m_GameFinished = false;
 
             InvalidateVisual();
+
+            if (m_HumanPlayer == Player.Red)
+                Task.Factory.StartNew(MakeComputerTurn);
         }
 
         private void CheckWinning(Player player)
@@ -65,11 +69,7 @@ namespace CheckersEngine
 
             Dispatcher.BeginInvoke(new Action(() => MessageBox.Show($"Player {player} wins!!")));
 
-            this.PreviewMouseDown -= CheckersUserControl_MouseDown;
-            this.PreviewMouseMove -= CheckersUserControl_MouseMove;
-            this.PreviewMouseUp -= CheckersUserControl_MouseUp;
-
-            GameFinished?.Invoke(this, EventArgs.Empty);
+            m_GameFinished = true;
         }
 
         #region Render
@@ -242,7 +242,7 @@ namespace CheckersEngine
 
         private void CheckersUserControl_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (!m_FinishRender)
+            if (!m_FinishRender || m_GameFinished)
                 return;
 
             var position = e.GetPosition(this);
@@ -253,7 +253,7 @@ namespace CheckersEngine
                 return;
 
             m_SelectedButton = GetButton(position);
-            Grid.SetZIndex(m_SelectedButton, 0);
+            Grid.SetZIndex(m_SelectedButton, 1000);
             m_SelectedButtonPosition = new BoardCoordinate(row, col);
         }
 

@@ -58,6 +58,6 @@ namespace CheckersEngine
     {
         Easy,
         Medium,
-        High
+        Hard
     }
 }

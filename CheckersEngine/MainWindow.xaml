@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CheckersEngine"
         mc:Ignorable="d"
-        Title="MainWindow" Height="308" Width="262">
+        Title="MainWindow" Height="308" Width="262"
+        FlowDirection="RightToLeft">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -13,11 +14,11 @@
         </Grid.RowDefinitions>
         <ToolBarTray Grid.Row="0">
             <ToolBar>
-                <Button Content="StartGame" Click="PlayButton_Click"/>
-                <Button Content="Game Options" Click="GameOptinsClick" />
-                <Button Content="Rules" Grid.Row="3" Click="RulesButton_Click"/>
+                <Button Content="התחל משחק" Click="PlayButton_Click"/>
+                <Button Content="אפשרויות" Click="GameOptinsClick" />
+                <Button Content="חוקים" Grid.Row="3" Click="RulesButton_Click"/>
             </ToolBar>
         </ToolBarTray>
-        <local:CheckersUserControl x:Name="CheckersUserControl" Grid.Row="1" GameFinished="CheckersUserControl_GameFinished"/>
+        <local:CheckersUserControl x:Name="CheckersUserControl" Grid.Row="1" />
     </Grid>
 </Window>
