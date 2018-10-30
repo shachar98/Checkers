@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 
 namespace CheckersEngine
 {
-
+    /// <summary>
+    /// This class represnts the game engine for the computer
+    /// </summary>
     public class ComputerGameEngine : IComputerGameEngine
     {
         public CheckersGameState GameState { get; private set; }
@@ -16,7 +18,6 @@ namespace CheckersEngine
         public ComputerGameEngine(Level level, Player player)
         {
             m_AlpahBetaAlgorithem = InitAlphaBeta(level);
-
             GameState = new CheckersGameState(InitBoard(), player);
         }
 
@@ -30,6 +31,11 @@ namespace CheckersEngine
                 return new AlphaBetaAlgorithem(4);
         }
 
+        /// <summary>
+        /// Make the next move
+        /// </summary>
+        /// <param name="player">The player that moves</param>
+        /// <returns>The new state</returns>
         public IGameState<CheckersGameState> Play(Player player)
         {
             CheckersGameState oldGameState = new CheckersGameState(GameState.Board, player);

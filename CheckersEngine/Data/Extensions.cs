@@ -18,6 +18,11 @@ namespace CheckersEngine
             return board.Cast<Piece>().Count(_ => _ != null);
         }
 
+        /// <summary>
+        /// Cloning a board with copy the pieces
+        /// </summary>
+        /// <param name="originalBoard">The board to clone</param>
+        /// <returns>The cloned board</returns>
         public static Piece[,] CloneBoard(this Piece[,] originalBoard)
         {
             Piece[,] newBoard = new Piece[originalBoard.GetLength(0), originalBoard.GetLength(1)];
@@ -32,13 +37,19 @@ namespace CheckersEngine
             return newBoard;
         }
 
-        public static bool BoardsEqual(this Piece[,] originalBoard, Piece[,] otherBoard)
+        /// <summary>
+        /// Checking if two boards are equals, by comparing all the cells
+        /// </summary>
+        /// <param name="firstBoard">The first board</param>
+        /// <param name="secondBoard">The second board</param>
+        /// <returns>Truw if the board are euals. Otherwise false</returns>
+        public static bool BoardsEqual(this Piece[,] firstBoard, Piece[,] secondBoard)
         {
-            for (int row = 0; row < originalBoard.GetLength(0); row++)
+            for (int row = 0; row < firstBoard.GetLength(0); row++)
             {
-                for (int col = 0; col < originalBoard.GetLength(1); col++)
+                for (int col = 0; col < firstBoard.GetLength(1); col++)
                 {
-                    if (!Equals(originalBoard[row, col], originalBoard[row, col]))
+                    if (!Equals(firstBoard[row, col], firstBoard[row, col]))
                         return false;
                 }
             }

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace CheckersEngine
 {
+    /// <summary>
+    /// This class handle user movement in checkers game
+    /// </summary>
     public class UserGameEngine : IUserGameEngine
     {
         MovesHandler m_MovesHandler;
@@ -15,6 +18,13 @@ namespace CheckersEngine
             m_MovesHandler = movesHandler;
         }
 
+        /// <summary>
+        /// This method checks if a givven move is valid by the checkers ruless
+        /// </summary>
+        /// <param name="start">The starting moving position</param>
+        /// <param name="end">The finish moving position</param>
+        /// <param name="board">The current Board</param>
+        /// <returns>True if the move is valid. Otherwise false</returns>
         public bool IsValidMove(BoardCoordinate start, BoardCoordinate end, Piece[,] board)
         {
             return IsValidMove(start, end, board, false);
@@ -65,6 +75,12 @@ namespace CheckersEngine
             return false;
         }
 
+        /// <summary>
+        /// The method checks if the piece in the board position can continue eating, by checking all posibilities and using IsValid
+        /// </summary>
+        /// <param name="board">The current board</param>
+        /// <param name="position">The checking piece position</param>
+        /// <returns>True if the piece can continue eating. Otherwise false</returns>
         public bool CanContinueEat(Piece[,] board, BoardCoordinate position)
         {
             Piece piece = board[position.Row, position.Col];

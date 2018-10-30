@@ -25,6 +25,8 @@ namespace CheckersEngine
     /// </summary>
     public partial class CheckersUserControl : UserControl
     {
+        #region Members
+
         private const int CELL_SIZE = 30;
         private IComputerGameEngine m_ComputerGameEngine;
         private bool m_FinishRender = false;
@@ -34,6 +36,10 @@ namespace CheckersEngine
         private BoardCoordinate m_SelectedButtonPosition;
         private MovesHandler m_MovesHandler;
         private IUserGameEngine m_UserGameEngine;
+
+        #endregion
+
+        #region Ctor
 
         public CheckersUserControl()
         {
@@ -50,6 +56,10 @@ namespace CheckersEngine
             m_HumanPlayer = Player.Blue;
         }
 
+        #endregion
+
+        #region Methods
+
         public void StartPlay(Player player, Level level)
         {
             m_ComputerGameEngine = new ComputerGameEngine(level, player);
@@ -62,23 +72,48 @@ namespace CheckersEngine
                 Task.Factory.StartNew(MakeComputerTurn);
         }
 
-        private void CheckWinning(Player player)
+        private bool CheckWinning(Player player)
         {
             if (m_MovesHandler.HaveActions(player.GetOtherPlayer(), new CheckersGameState(m_ComputerGameEngine.GameState.Board, player.GetOtherPlayer())))
-                return;
+                return false;
 
             Dispatcher.BeginInvoke(new Action(() => MessageBox.Show($"Player {player} wins!!")));
-
             m_GameFinished = true;
+            return true;
         }
+
+        /// <summary>
+        /// Continue render computer turn, in case the more than one move happened
+        /// </summary>
+        /// <returns></returns>
+        private async Task ContinueRender()
+        {
+            await Task.Delay(700);
+            await Dispatcher.BeginInvoke(new Action(() => this.InvalidateVisual()));
+        }
+
+        // Making the computer turn, with delay for better UX
+        private async Task MakeComputerTurn()
+        {
+            await Task.Delay(500);
+            await Dispatcher.BeginInvoke(new Action(() =>
+            {
+                m_ComputerGameEngine.Play(m_HumanPlayer.GetOtherPlayer());
+                this.InvalidateVisual();
+            }));
+        }
+
+        #endregion
 
         #region Render
 
+        /// <summary>
+        /// Rendering the board. we first checking which board we need to darw.
+        /// Second, we remove everything from the board
+        /// Third, we add all the new boards, with checking the piece's player and type for calculate the image
+        /// </summary>
         protected override void OnRender(DrawingContext drawingContext)
         {
-            //if (!m_IsPlaying)
-            //    return;
-
             Piece[,] currBoard = m_ComputerGameEngine.GameState.MidStates.FirstOrDefault();
             m_FinishRender = currBoard == null;
 
@@ -105,22 +140,6 @@ namespace CheckersEngine
             }
 
             base.OnRender(drawingContext);
-        }
-
-        private async Task ContinueRender()
-        {
-            await Task.Delay(700);
-            await Dispatcher.BeginInvoke(new Action(() => this.InvalidateVisual()));
-        }
-
-        private async Task MakeComputerTurn()
-        {
-            await Task.Delay(500);
-            await Dispatcher.BeginInvoke(new Action(() =>
-            {
-                m_ComputerGameEngine.Play(m_HumanPlayer.GetOtherPlayer());
-                this.InvalidateVisual();
-            }));
         }
 
         private void AddButton(int row, int col, Piece[,] currBoard)
@@ -190,6 +209,11 @@ namespace CheckersEngine
 
         #region Mouse Events
 
+        /// <summary>
+        /// In mouse up, we need to check if drag happened. if so, we want to check if it's a valid move.
+        /// Is it's is, we make it, and check if the player's turn finished, or he can continue eating.
+        /// If the player turn finished, we start the computer turn
+        /// </summary>
         private void CheckersUserControl_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (m_SelectedButtonPosition == null)
@@ -212,6 +236,7 @@ namespace CheckersEngine
 
                 m_MovesHandler.ChangeToQueenIfNeeded(board, newPosition);
 
+                // Check if eating happened
                 bool turnFinish = true;
                 if (board[betweenCoor.Row, betweenCoor.Col] != null)
                 {
@@ -220,10 +245,8 @@ namespace CheckersEngine
                 }
 
                 if (turnFinish)
-                {
-                    CheckWinning(m_HumanPlayer);
-                    Task.Factory.StartNew(MakeComputerTurn);
-                }
+                    if (!CheckWinning(m_HumanPlayer))
+                        Task.Factory.StartNew(MakeComputerTurn);
             }
 
             m_SelectedButton = null;
@@ -231,6 +254,9 @@ namespace CheckersEngine
             this.InvalidateVisual();
         }
 
+        /// <summary>
+        /// If there is a selected button, it means that the player is dragging the button, so we want to continue drga it
+        /// </summary>
         private void CheckersUserControl_MouseMove(object sender, MouseEventArgs e)
         {
             if (m_SelectedButton == null)
@@ -240,6 +266,10 @@ namespace CheckersEngine
             m_SelectedButton.Margin = new Thickness(position.X - CELL_SIZE / 2, position.Y - CELL_SIZE / 2, 0, 0);
         }
 
+        /// <summary>
+        /// In the case of mouse down, we want to check if it's player's turn, and if it's valid piece
+        /// If yes, we select to button, and dragged it with the mouse
+        /// </summary>
         private void CheckersUserControl_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!m_FinishRender || m_GameFinished)

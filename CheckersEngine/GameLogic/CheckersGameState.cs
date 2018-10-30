@@ -29,6 +29,10 @@ namespace CheckersEngine
             m_MovesHandler = MovesHandler.Instance;
         }
 
+        /// <summary>
+        /// Estimate the score of the board
+        /// </summary>
+        /// <returns>The state estimated score</returns>
         public double CalcScore()
         {
             double score = 0;
@@ -40,7 +44,10 @@ namespace CheckersEngine
                     if (currPiece == null)
                         continue;
 
+                    // Queen's score is heigher the regular piece
                     double pieceScore = currPiece.PieceType == PieceType.Queen ? 1000 : 400;
+
+                    // Penalty for been in the middle of the board, because this is worst place in general
                     if (currPiece.PieceType == PieceType.Regular)
                     {
                         double rowScore = Math.Min(row, Board.GetLength(0) - row);
@@ -48,6 +55,7 @@ namespace CheckersEngine
                         pieceScore -= rowScore * rowScore - colScore;
                     }
 
+                    // Oponent piece' score is exactly negate player piece' score
                     int factor = currPiece.Player == Player ? 1 : -1;
                     score += factor * pieceScore;
                 }
@@ -88,10 +96,15 @@ namespace CheckersEngine
             return player == Player ? 0 : 1;
         }
 
-        public CheckersGameState CloneWithNewState(Piece[,] newState)
+        /// <summary>
+        /// Clone the board and adding the board given as the new state board
+        /// </summary>
+        /// <param name="newBoard">The bew Board</param>
+        /// <returns>The new State</returns>
+        public CheckersGameState CloneWithNewState(Piece[,] newBoard)
         {
-            CheckersGameState newGameState = new CheckersGameState(newState, Player);
-            newGameState.MidStates= new List<Piece[,]>(MidStates);
+            CheckersGameState newGameState = new CheckersGameState(newBoard, Player);
+            newGameState.MidStates = new List<Piece[,]>(MidStates);
             newGameState.MidStates.Add(Board.CloneBoard());
 
             return newGameState;

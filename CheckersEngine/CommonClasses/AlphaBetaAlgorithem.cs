@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace GameEnginesCommon
 {
+    /// <summary>
+    /// This class represents an alpha - beta algorithem, that search untill the given depth
+    /// </summary>
     public class AlphaBetaAlgorithem : IMoveChooser
     {
         private int m_Depth;
@@ -14,6 +17,12 @@ namespace GameEnginesCommon
             m_Depth = depth;
         }
 
+        /// <summary>
+        /// Get the next move the alpa-beta search
+        /// </summary>
+        /// <typeparam name="T">The action</typeparam>
+        /// <param name="gameState">The current state</param>
+        /// <returns>The new state</returns>
         public IGameState<T> GetNextMove<T>(IGameState<T> gameState)
         {
             double highestScore = int.MinValue;
@@ -34,6 +43,7 @@ namespace GameEnginesCommon
 
         private double Min<T>(int depth, int agentIndex, IGameState<T> state, double alpha, double betta)
         {
+            // In this case, we finished
             if (state.IsWin() || state.IsLost() || m_Depth == depth)
                 return state.CalcScore();
 
@@ -44,6 +54,8 @@ namespace GameEnginesCommon
                 double score = GetScore(depth, agentIndex, nextState, alpha, betta);
                 lowestScore = Math.Min(lowestScore, score);
                 betta = Math.Min(lowestScore, betta);
+
+                // Checking if we can stop searching, because we can't reach better score
                 if (betta <= alpha)
                     break;
             }
@@ -53,6 +65,7 @@ namespace GameEnginesCommon
 
         private double Max<T>(int depth, int agentIndex, IGameState<T> state, double alpha, double betta)
         {
+            // In this case, we finished
             if (state.IsWin() || state.IsLost() || m_Depth == depth)
                 return state.CalcScore();
 
@@ -63,6 +76,8 @@ namespace GameEnginesCommon
                 double score = GetScore(depth, agentIndex, nextState, alpha, betta);
                 highestScore = Math.Max(highestScore, score);
                 alpha = Math.Max(highestScore, alpha);
+
+                // Checking if we can stop searching, because we can't reach better score
                 if (betta <= alpha)
                     break;
             }
@@ -72,6 +87,8 @@ namespace GameEnginesCommon
 
         private double GetScore<T>(int depth, int agentIndex, IGameState<T> state, double alpha, double betta)
         {
+            // This algorithm supports several enemies.
+            // One turn is defined as ont turn of the player, and one turn of all the enemies
             int nextAgent = (agentIndex + 1) % state.NumOfAgents;
             if (nextAgent == 0)
                 return Max(depth + 1, nextAgent, state, alpha, betta);
