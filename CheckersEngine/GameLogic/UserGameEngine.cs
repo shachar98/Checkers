@@ -18,6 +18,7 @@ namespace CheckersEngine
         public bool IsValidMove(BoardCoordinate start, BoardCoordinate end, Piece[,] board, bool isContinuesEating)
         {
             var movingPiece = board[start.Row, start.Col];
+            bool mustEat = m_MovesHandler.GetNextActions(movingPiece.Player, board, movingPiece.Player).First().Board.PiecesCount() != board.PiecesCount();
             if (!end.IsInBoard(board))
                 return false;
 
@@ -38,7 +39,7 @@ namespace CheckersEngine
             if (board[end.Row, end.Col] != null)
                 return false;
 
-            if (rowDistance == 1 && !isContinuesEating)
+            if (rowDistance == 1 && !isContinuesEating && !mustEat)
                 return true;
 
             for (int i = 1; i < distance.Row - 1; i++)
@@ -50,7 +51,7 @@ namespace CheckersEngine
 
             BoardCoordinate oponentPosition = start.Add(direction.Multiply(rowDistance - 1));
             var possibleOponent = board[oponentPosition.Row, oponentPosition.Col];
-            if (possibleOponent == null && !isContinuesEating && rowDistance <= maxMovesCount)
+            if (possibleOponent == null && !isContinuesEating && !mustEat && rowDistance <= maxMovesCount)
                 return true;
 
             if (possibleOponent != null && possibleOponent.Player != movingPiece.Player)

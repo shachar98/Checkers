@@ -48,14 +48,14 @@ namespace CheckersEngine
             this.PreviewMouseMove += CheckersUserControl_MouseMove;
             this.PreviewMouseUp += CheckersUserControl_MouseUp;
 
-            m_GameEngine = new GameEngine(Level.Medium);
+            m_GameEngine = new GameEngine(Level.Medium, Player.Blue);
             m_HumanPlayer = Player.Blue;
         }
 
         public event EventHandler GameFinished;
         public void StartPlay(Player player, Level level)
         {
-            m_GameEngine = new GameEngine(level);
+            m_GameEngine = new GameEngine(level, player);
             m_HumanPlayer = player;
 
             InvalidateVisual();
@@ -63,7 +63,7 @@ namespace CheckersEngine
 
         private void CheckWinning(Player player)
         {
-            if (!m_WinningChecker.IsLost(player.GetOtherPlayer(), m_GameEngine.MoveState.CurrState))
+            if (!m_WinningChecker.IsLost(player.GetOtherPlayer(), m_GameEngine.GameState.Board))
                 return;
 
             Dispatcher.BeginInvoke(new Action(() => MessageBox.Show($"Player {player} wins!!")));
@@ -82,13 +82,13 @@ namespace CheckersEngine
             //if (!m_IsPlaying)
             //    return;
 
-            Piece[,] currBoard = m_GameEngine.MoveState.MidStates.FirstOrDefault();
+            Piece[,] currBoard = m_GameEngine.GameState.MidStates.FirstOrDefault();
             m_FinishRender = currBoard == null;
 
             if (currBoard == null)
-                currBoard = m_GameEngine.MoveState.CurrState;
+                currBoard = m_GameEngine.GameState.Board;
             else
-                m_GameEngine.MoveState.MidStates?.RemoveAt(0);
+                m_GameEngine.GameState.MidStates?.RemoveAt(0);
 
             RemoveOldButtons();
 
@@ -150,9 +150,9 @@ namespace CheckersEngine
             };
 
             if ((row + col) % 2 == 0)
-                button.Background = new SolidColorBrush(Colors.Black);
-            else
                 button.Background = new SolidColorBrush(Colors.White);
+            else
+                button.Background = new SolidColorBrush(Colors.Black);
             return button;
         }
 
@@ -203,7 +203,7 @@ namespace CheckersEngine
             int row = (int)(position.Y / CELL_SIZE);
             var newPosition = new BoardCoordinate(row, col);
 
-            var board = m_GameEngine.MoveState.CurrState;
+            var board = m_GameEngine.GameState.Board;
             if (m_UserGameEngine.IsValidMove(m_SelectedButtonPosition, newPosition, board, false))
             {
                 board[newPosition.Row, newPosition.Col] = board[m_SelectedButtonPosition.Row, m_SelectedButtonPosition.Col];
@@ -251,11 +251,12 @@ namespace CheckersEngine
             var position = e.GetPosition(this);
             int row = (int)(position.Y / CELL_SIZE);
             int col = (int)(position.X / CELL_SIZE);
-            Piece piece = m_GameEngine.MoveState.CurrState[row, col];
+            Piece piece = m_GameEngine.GameState.Board[row, col];
             if (piece == null || piece.Player != m_HumanPlayer)
                 return;
 
             m_SelectedButton = GetButton(position);
+            Grid.SetZIndex(m_SelectedButton, 0);
             m_SelectedButtonPosition = new BoardCoordinate(row, col);
         }
 

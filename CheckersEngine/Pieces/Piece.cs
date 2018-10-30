@@ -60,12 +60,4 @@ namespace CheckersEngine
         Medium,
         High
     }
-
-    public static class PlayerExtensions
-    {
-        public static Player GetOtherPlayer(this Player player)
-        {
-            return player == Player.Red ? Player.Blue : Player.Red;
-        }
-    }
 }

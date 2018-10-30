@@ -8,20 +8,16 @@ using System.Threading.Tasks;
 
 namespace CheckersEngine
 {
-    // TODO: change infinte cache to LRUCache
 
     public class GameEngine
     {
-        public CheckesMoveState MoveState { get; private set; }
+        public CheckersGameState GameState { get; private set; }
         private AlphaBetaAlgorithem m_AlpahBetaAlgorithem;
-        public GameEngine(Level level)
+        public GameEngine(Level level, Player player)
         {
             m_AlpahBetaAlgorithem = InitAlphaBeta(level);
 
-            MoveState = new CheckesMoveState()
-            {
-                CurrState = InitBoard()
-            };
+            GameState = new CheckersGameState(InitBoard(), player);
         }
 
         private AlphaBetaAlgorithem InitAlphaBeta(Level level)
@@ -34,12 +30,12 @@ namespace CheckersEngine
                 return new AlphaBetaAlgorithem(4);
         }
 
-        public IGameState<CheckesMoveState> Play(Player player)
+        public IGameState<CheckersGameState> Play(Player player)
         {
-            CheckersGameState oldGameState = new CheckersGameState(MoveState.CurrState, player);
+            CheckersGameState oldGameState = new CheckersGameState(GameState.Board, player);
             CheckersGameState newGameState = m_AlpahBetaAlgorithem.GetNextMove(oldGameState) as CheckersGameState;
             if (newGameState != null)
-                MoveState = newGameState.MoveState;
+                GameState = newGameState;
             return newGameState;
         }
 
@@ -47,14 +43,14 @@ namespace CheckersEngine
         {
             return new Piece[,]
             {
-                {new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null },
                 {null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red) },
                 {new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null },
+                {null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red), null, new RegularPiece(Player.Red) },
                 {null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null},
-                {null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue) },
                 {new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null },
                 {null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue) },
+                {new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null, new RegularPiece(Player.Blue), null },
             };
         }
     }

@@ -15,29 +15,22 @@ namespace CheckersEngine
     // * Add human player
     // * Add train against impself
 
-    public class CheckersGameState : IGameState<CheckesMoveState>
+    public class CheckersGameState : IGameState<CheckersGameState>
     {
-        private Player m_currPlayer;
+        public Player Player { get; }
         public MovesHandler MovesHandler { get; set; }
-        public CheckesMoveState MoveState { get; set; }
+        public List<Piece[,]> MidStates { get; set; } = new List<Piece[,]>();
         private WinningChecker m_WinningChecker;
+        public int NumOfAgents => 2;
+        public Piece[,] Board { get; }
 
         public CheckersGameState(Piece[,] board, Player currPlayer)
         {
             this.Board = board;
-            m_currPlayer = currPlayer;
+            Player = currPlayer;
             MovesHandler = new MovesHandler();
             m_WinningChecker = new WinningChecker(MovesHandler);
         }
-
-        public CheckersGameState(CheckesMoveState moveState, Player currPlayer)
-            :this (moveState.CurrState, currPlayer)
-        {
-            MoveState = moveState;
-        }
-
-        public int NumOfAgents => 2;
-        public Piece[,] Board { get; }
 
         public double CalcScore()
         {
@@ -58,7 +51,7 @@ namespace CheckersEngine
                         pieceScore -= rowScore * rowScore - colScore;
                     }
 
-                    int factor = currPiece.Player == m_currPlayer ? 1 : -1;
+                    int factor = currPiece.Player == Player ? 1 : -1;
                     score += factor * pieceScore;
                 }
             }
@@ -66,123 +59,45 @@ namespace CheckersEngine
             return score;
         }
 
-        public IEnumerable<CheckesMoveState> GetNextActions(int agentIndex)
+        public IEnumerable<CheckersGameState> GetNextActions(int agentIndex)
         {
-            List<CheckesMoveState> newStates = new List<CheckesMoveState>();
             Player player = GetPlayer(agentIndex);
-            for (int row = 0; row < Board.GetLength(0); row++)
-            {
-                for (int col = 0; col < Board.GetLength(1); col++)
-                {
-                    var currPiece = Board[row, col];
-                    if (currPiece == null || currPiece.Player != player)
-                        continue;
-
-                    BoardCoordinate currCoordinate = new BoardCoordinate(row, col);
-                    List<CheckesMoveState> newBoards = GetMovesOptions(currCoordinate, player, Board, false, new CheckesMoveState());
-                    newStates.AddRange(newBoards);
-                }
-            }
-
-            return newStates;
+            return MovesHandler.GetNextActions(player, Board, this.Player);
         }
 
-        private List<CheckesMoveState> GetMovesOptions(BoardCoordinate currPosition, Player player, Piece[,] originalBoard, bool isMultipleEating, CheckesMoveState currMoveState)
+        public IGameState<CheckersGameState> GetNextState(int agentIndex, CheckersGameState action)
         {
-            List<CheckesMoveState> newBoards = new List<CheckesMoveState>();
-
-            Piece currPiece = originalBoard[currPosition.Row, currPosition.Col];
-            List<BoardCoordinate> possibleMoves = MovesHandler.GetSuspectMovesDirections(currPiece, isMultipleEating);
-            int squareMoveCount = MovesHandler.GetSquaresMoveCount(currPiece, Board);
-
-            foreach (var direction in possibleMoves)
-            {
-                bool canContinueMoving = true;
-                for (int i = 1; i <= squareMoveCount && canContinueMoving; i++)
-                {
-                    BoardCoordinate moveCount = direction.Multiply(i);
-                    var newPosition = currPosition.Add(moveCount);
-                    if (!newPosition.IsInBoard(originalBoard))
-                    {
-                        canContinueMoving = false;
-                        continue;
-                    }
-
-                    var newPoistionPiece = originalBoard[newPosition.Row, newPosition.Col];
-                    canContinueMoving = newPoistionPiece == null;
-
-                    if (newPoistionPiece == null && !isMultipleEating)
-                    {
-                        Piece[,] clonedBoard = CloneBoard(originalBoard);
-                        clonedBoard[newPosition.Row, newPosition.Col] = currPiece;
-                        clonedBoard[currPosition.Row, currPosition.Col] = null;
-                        MovesHandler.ChangeToQueenIfNeeded(clonedBoard, newPosition);
-                        var newMoveState = currMoveState.CloneWithNewState(clonedBoard);
-                        newBoards.Add(newMoveState);
-                        continue;
-                    }
-
-                    var oponentPosition = newPosition;
-                    newPosition = oponentPosition.Add(direction);
-                    if (!newPosition.IsInBoard(originalBoard))
-                        continue;
-
-                    if (newPoistionPiece != null && newPoistionPiece.Player != player && originalBoard[newPosition.Row, newPosition.Col] == null)
-                    {
-                        Piece[,] clonedBoard = CloneBoard(originalBoard);
-                        clonedBoard[newPosition.Row, newPosition.Col] = clonedBoard[currPosition.Row, currPosition.Col];
-                        MovesHandler.ChangeToQueenIfNeeded(clonedBoard, newPosition);
-                        clonedBoard[currPosition.Row, currPosition.Col] = null;
-                        clonedBoard[oponentPosition.Row, oponentPosition.Col] = null;
-                        var newMoveState = currMoveState.CloneWithNewState(clonedBoard);
-                        newBoards.AddRange(GetMovesOptions(newPosition, player, clonedBoard, true, newMoveState));
-                    }
-                }
-            }
-
-            if (!newBoards.Any() && isMultipleEating)
-                newBoards.Add(currMoveState);
-
-            return newBoards;
-        }
-
-        private Piece[,] CloneBoard(Piece[,] originalBoard)
-        {
-            Piece[,] newBoard = new Piece[originalBoard.GetLength(0), originalBoard.GetLength(1)];
-            for (int row = 0; row < newBoard.GetLength(0); row++)
-            {
-                for (int col = 0; col < newBoard.GetLength(1); col++)
-                {
-                    newBoard[row, col] = originalBoard[row, col];
-                }
-            }
-
-            return newBoard;
-        }
-
-        public IGameState<CheckesMoveState> GetNextState(int agentIndex, CheckesMoveState action)
-        {
-            return new CheckersGameState(action, m_currPlayer);
+            return action;
+            // return new CheckersGameState(action, m_currPlayer);
         }
 
         public bool IsLost()
         {
-            return m_WinningChecker.IsLost(m_currPlayer, Board);
+            return m_WinningChecker.IsLost(Player, Board);
         }
 
         public bool IsWin()
         {
-            return m_WinningChecker.IsLost(m_currPlayer.GetOtherPlayer(), Board);
+            return m_WinningChecker.IsLost(Player.GetOtherPlayer(), Board);
         }
 
         private Player GetPlayer(int playerIndex)
         {
-            return playerIndex == 0 ? m_currPlayer : m_currPlayer.GetOtherPlayer();
+            return playerIndex == 0 ? Player : Player.GetOtherPlayer();
         }
 
         private int GetIndex(Player player)
         {
-            return player == m_currPlayer ? 0 : 1;
+            return player == Player ? 0 : 1;
+        }
+
+        public CheckersGameState CloneWithNewState(Piece[,] newState)
+        {
+            CheckersGameState newGameState = new CheckersGameState(newState, Player);
+            newGameState.MidStates= new List<Piece[,]>(MidStates);
+            newGameState.MidStates.Add(Board.CloneBoard());
+
+            return newGameState;
         }
     }
 }

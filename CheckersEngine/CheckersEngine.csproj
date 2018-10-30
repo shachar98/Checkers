@@ -58,6 +58,7 @@
     <Compile Include="CommonClasses\AlphaBetaAlgorithem.cs" />
     <Compile Include="CommonClasses\BoardCoordinate.cs" />
     <Compile Include="CommonClasses\IGameState.cs" />
+    <Compile Include="GameLogic\Extensions.cs" />
     <Compile Include="GameLogic\MovesHandler.cs" />
     <Compile Include="GameLogic\WinningChecker.cs" />
     <Compile Include="UI\RulesUserControl.xaml.cs">
@@ -93,7 +94,6 @@
     <Compile Include="UI\CheckersUserControl.xaml.cs">
       <DependentUpon>CheckersUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GameLogic\CheckesMoveState.cs" />
     <Compile Include="GameLogic\ComputerGameEngine.cs" />
     <Compile Include="Pieces\Piece.cs" />
     <Compile Include="MainWindow.xaml.cs">

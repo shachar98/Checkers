@@ -35,7 +35,6 @@ namespace CheckersEngine.GameLogic
             return true;
         }
 
-
         private bool IsMoveAvilable(BoardCoordinate currPosition, Player player, Piece[,] originalBoard)
         {
             var currPiece = originalBoard[currPosition.Row, currPosition.Col];
